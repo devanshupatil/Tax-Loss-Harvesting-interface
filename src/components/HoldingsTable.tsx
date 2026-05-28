@@ -20,9 +20,10 @@ export default function HoldingsTable() {
   const sorted = useMemo(() => sortHoldings(holdings), [holdings])
   const visible = showAll ? sorted : sorted.slice(0, DEFAULT_VISIBLE)
   const allKeys = useMemo(() => sorted.map(holdingKey), [sorted, holdingKey])
+  const visibleKeys = useMemo(() => visible.map(holdingKey), [visible, holdingKey])
 
-  const allSelected = allKeys.length > 0 && allKeys.every((k) => selectedKeys.has(k))
-  const someSelected = allKeys.some((k) => selectedKeys.has(k))
+  const allSelected = visibleKeys.length > 0 && visibleKeys.every((k) => selectedKeys.has(k))
+  const someSelected = visibleKeys.some((k) => selectedKeys.has(k))
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -42,7 +43,7 @@ export default function HoldingsTable() {
                     ref={(el) => {
                       if (el) el.indeterminate = someSelected && !allSelected
                     }}
-                    onChange={() => dispatch({ type: 'TOGGLE_ALL', allKeys })}
+                    onChange={() => dispatch({ type: 'TOGGLE_ALL', allKeys: visibleKeys })}
                     className="w-4 h-4 accent-blue-600 cursor-pointer"
                   />
                   <span className="text-xs font-medium text-gray-500">Asset</span>
@@ -84,14 +85,16 @@ export default function HoldingsTable() {
         </table>
       </div>
 
-      <div className="px-4 py-3 border-t border-gray-100 text-center">
-        <button
-          onClick={() => dispatch({ type: 'SET_SHOW_ALL', value: !showAll })}
-          className="text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors"
-        >
-          {showAll ? 'Show less ▲' : `View all (${holdings.length}) ▼`}
-        </button>
-      </div>
+      {!state.loading && (
+        <div className="px-4 py-3 border-t border-gray-100 text-center">
+          <button
+            onClick={() => dispatch({ type: 'SET_SHOW_ALL', value: !showAll })}
+            className="text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors"
+          >
+            {showAll ? 'Show less ▲' : `View all (${holdings.length}) ▼`}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

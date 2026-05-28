@@ -27,13 +27,18 @@ function Dashboard() {
   const { loading, error } = state
   const calc = useHarvestCalc()
 
-  useEffect(() => {
+  function loadData() {
+    dispatch({ type: 'SET_LOADING' })
     Promise.all([fetchHoldings(), fetchCapitalGains()])
       .then(([holdings, capitalGains]) => dispatch({ type: 'SET_DATA', holdings, capitalGains }))
       .catch((e: unknown) =>
         dispatch({ type: 'SET_ERROR', error: e instanceof Error ? e.message : 'Failed to load data' })
       )
-  }, [dispatch])
+  }
+
+  useEffect(() => {
+    loadData()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="max-w-5xl mx-auto px-4 pb-8">
@@ -50,11 +55,7 @@ function Dashboard() {
             <span>⚠ {error}</span>
             <button
               className="ml-4 text-xs font-semibold underline"
-              onClick={() => {
-                Promise.all([fetchHoldings(), fetchCapitalGains()])
-                  .then(([h, cg]) => dispatch({ type: 'SET_DATA', holdings: h, capitalGains: cg }))
-                  .catch((e: unknown) => dispatch({ type: 'SET_ERROR', error: e instanceof Error ? e.message : 'Failed to load data' }))
-              }}
+              onClick={loadData}
             >
               Retry
             </button>

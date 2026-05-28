@@ -13,6 +13,7 @@ interface HarvestState {
 type HarvestAction =
   | { type: 'SET_DATA'; holdings: Holding[]; capitalGains: CapitalGains }
   | { type: 'SET_ERROR'; error: string }
+  | { type: 'SET_LOADING' }
   | { type: 'TOGGLE_COIN'; key: string }
   | { type: 'TOGGLE_ALL'; allKeys: string[] }
   | { type: 'SET_SHOW_ALL'; value: boolean }
@@ -36,6 +37,8 @@ function reducer(state: HarvestState, action: HarvestAction): HarvestState {
       return { ...state, holdings: action.holdings, capitalGains: action.capitalGains, loading: false, error: null }
     case 'SET_ERROR':
       return { ...state, loading: false, error: action.error }
+    case 'SET_LOADING':
+      return { ...state, loading: true, error: null }
     case 'TOGGLE_COIN': {
       const next = new Set(state.selectedKeys)
       if (next.has(action.key)) next.delete(action.key)
