@@ -6,5 +6,5 @@ const DATA: CapitalGains = {
 }
 
 export function fetchCapitalGains(): Promise<CapitalGains> {
-  return new Promise((resolve) => setTimeout(() => resolve(DATA), 200))
+  return new Promise((resolve) => setTimeout(() => resolve(structuredClone(DATA)), 200))
 }

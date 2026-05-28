@@ -29,5 +29,5 @@ const DATA: Holding[] = [
 ]
 
 export function fetchHoldings(): Promise<Holding[]> {
-  return new Promise((resolve) => setTimeout(() => resolve(DATA), 200))
+  return new Promise((resolve) => setTimeout(() => resolve(structuredClone(DATA)), 200))
 }
